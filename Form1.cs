@@ -4,6 +4,7 @@ namespace YouTubeToMP3Converter
 {
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
@@ -19,36 +20,43 @@ namespace YouTubeToMP3Converter
                 return;
             }
 
-            try
-            {
-                lblStatus.Text = "Status: Downloading...";
-                ConvertToMP3(url);
-                lblStatus.Text = "Status: Conversion Completed!";
-            }
-            catch (Exception ex)
-            {
-                lblStatus.Text = "Status: Error!";
-                MessageBox.Show($"Error: {ex.Message}");
-            }
+            lblStatus.Text = "Status: Downloading...";
+
+            Task.Run(() => ConvertToMP3(url));
         }
 
         private void ConvertToMP3(string url)
         {
             string ytDlpPath = @"D:\D003.exe\Code\CS\Personal\YouTubeToMP3Converter\yt-dlp.exe";
-            string outputDirectory = @"D:\D003.exe\Code\CS\Personal\YouTubeToMP3Converter\MP3ConvertedMusic";
+            string outputDirectory = @"C:\Users\Admin\Downloads";
 
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = ytDlpPath,
-                Arguments = $"-x --audio-format mp3 --audio-quality 0 -o \"{outputDirectory}\\%(title)s.%(ext)s\" {url}",
+                Arguments = $"--extract-audio --audio-format mp3 --audio-quality 0 " +
+                            "--format bestaudio --concurrent-fragments 32 " +
+                            $"-o \"{outputDirectory}\\%(title)s.%(ext)s\" {url}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
 
-            Process process = Process.Start(processStartInfo);
-            process.WaitForExit();
+            using (Process process = Process.Start(processStartInfo))
+            {
+                process!.OutputDataReceived += (sender, e) => Console.WriteLine(e.Data);
+                process.ErrorDataReceived += (sender, e) => Console.WriteLine(e.Data);
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                process.WaitForExit();
+            }
+
+            Invoke(() =>
+            {
+                lblStatus.Text = "Status: Conversion Completed!";
+                MessageBox.Show("Conversion completed successfully!");
+            });
         }
     }
 }
