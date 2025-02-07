@@ -31,18 +31,19 @@
             txtURL = new TextBox();
             btnConvert = new Button();
             lblStatus = new Label();
+            lblTrademark = new Label();
             SuspendLayout();
             // 
             // txtURL
             // 
-            txtURL.Location = new Point(49, 145);
+            txtURL.Location = new Point(138, 219);
             txtURL.Name = "txtURL";
             txtURL.Size = new Size(745, 35);
             txtURL.TabIndex = 0;
             // 
             // btnConvert
             // 
-            btnConvert.Location = new Point(349, 198);
+            btnConvert.Location = new Point(438, 272);
             btnConvert.Name = "btnConvert";
             btnConvert.Size = new Size(136, 50);
             btnConvert.TabIndex = 1;
@@ -53,15 +54,25 @@
             // lblStatus
             // 
             lblStatus.AutoSize = true;
-            lblStatus.Location = new Point(349, 263);
+            lblStatus.Location = new Point(438, 337);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(136, 30);
             lblStatus.TabIndex = 2;
             lblStatus.Text = "Status: Ready";
             // 
+            // lblTrademark
+            // 
+            lblTrademark.AutoSize = true;
+            lblTrademark.Location = new Point(387, 539);
+            lblTrademark.Name = "lblTrademark";
+            lblTrademark.Size = new Size(260, 30);
+            lblTrademark.TabIndex = 3;
+            lblTrademark.Text = "Made by CebotariDan2025";
+            // 
             // Form1
             // 
-            ClientSize = new Size(846, 435);
+            ClientSize = new Size(1040, 606);
+            Controls.Add(lblTrademark);
             Controls.Add(lblStatus);
             Controls.Add(btnConvert);
             Controls.Add(txtURL);
@@ -76,5 +87,6 @@
         private System.Windows.Forms.TextBox txtURL;
         private System.Windows.Forms.Button btnConvert;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Label lblTrademark;
     }
 }

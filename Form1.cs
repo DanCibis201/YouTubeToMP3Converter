@@ -4,7 +4,6 @@ namespace YouTubeToMP3Converter
 {
     public partial class Form1 : Form
     {
-
         public Form1()
         {
             InitializeComponent();
@@ -22,30 +21,37 @@ namespace YouTubeToMP3Converter
 
             lblStatus.Text = "Status: Downloading...";
 
-            Task.Run(() => ConvertToMP3(url));
+            Task.Run(() => DownloadAndConvertToMP3(url));
         }
 
-        private void ConvertToMP3(string url)
+        private void DownloadAndConvertToMP3(string url)
         {
-            string ytDlpPath = @"D:\D003.exe\Code\CS\Personal\YouTubeToMP3Converter\yt-dlp.exe";
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string projectDirectory = Path.GetFullPath(Path.Combine(baseDirectory, @"..\..\..\"));
+
+            string ytDlpPath = Path.Combine(projectDirectory, "yt-dlp.exe");
+            string ffmpegPath = Path.Combine(projectDirectory, "ffmpeg", "bin", "ffmpeg.exe");
+
             string outputDirectory = @"C:\Users\Admin\Downloads";
 
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = ytDlpPath,
-                Arguments = $"--extract-audio --audio-format mp3 --audio-quality 0 " +
-                            "--format bestaudio --concurrent-fragments 32 " +
-                            $"-o \"{outputDirectory}\\%(title)s.%(ext)s\" {url}",
+                Arguments = $"--ffmpeg-location \"{ffmpegPath}\" " +
+                            $"--extract-audio --audio-format mp3 --audio-quality 0 " +
+                            $"--output \"{outputDirectory}\\%(title)s.%(ext)s\" " +
+                            $"\"{url}\"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
             };
 
             using (Process process = Process.Start(processStartInfo))
             {
-                process!.OutputDataReceived += (sender, e) => Console.WriteLine(e.Data);
+                process.OutputDataReceived += (sender, e) => Console.WriteLine(e.Data);
                 process.ErrorDataReceived += (sender, e) => Console.WriteLine(e.Data);
+
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
 
